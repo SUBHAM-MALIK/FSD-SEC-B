@@ -1,32 +1,60 @@
-const productcontainer =
-    document.getElementById("products-container");
+const productcontainer = document.getElementById("products-container");
 
-for (let i = 0; i < 20; i++) {
-    const div = document.createElement("div");
+const fetchProducts = async () => {
+    const response = await fetch("https://dummyjson.com/products");
+    const data = await response.json();
+    const products = data.products;
 
-    const img = document.createElement("img");
+    products.forEach(product => {
+        const div = document.createElement("div");
 
-    const title = document.createElement("h2");
-    title.innerText = "Product Title";
+        const img = document.createElement("img");
+        img.src = product.thumbnail;
+        img.alt = product.title;
 
-    const price = document.createElement("h2");
-    price.innerText = "$89";
+        const title = document.createElement("h2");
+        title.innerText = product.title;
 
-    const decrementbtn = document.createElement("button");
-    decrementbtn.innerText = "-";
+        const price = document.createElement("h2");
+        price.innerText = "$" + product.price;
 
-    const incrementbtn = document.createElement("button");
-    incrementbtn.innerText = "+";
+        let count = 0;
 
-    const span = document.createElement("span");
-    span.innerText = "ADD";
+        const controls = document.createElement("div");
+        controls.classList.add("controls");
 
-    div.appendChild(img);
-    div.appendChild(title);
-    div.appendChild(price);
-    div.appendChild(decrementbtn);
-    div.appendChild(span);
-    div.appendChild(incrementbtn);
+        const decrementbtn = document.createElement("button");
+        decrementbtn.innerText = "-";
 
-    productcontainer.appendChild(div);
+        const span = document.createElement("span");
+        span.innerText = "ADD";
+
+        const incrementbtn = document.createElement("button");
+        incrementbtn.innerText = "+";
+
+        incrementbtn.addEventListener("click", () => {
+            count++;
+            span.innerText = count;
+        });
+
+        decrementbtn.addEventListener("click", () => {
+            if (count > 0) {
+                count--;
+                span.innerText = count === 0 ? "ADD" : count;
+            }
+        });
+
+        controls.appendChild(decrementbtn);
+        controls.appendChild(span);
+        controls.appendChild(incrementbtn);
+
+        div.appendChild(img);
+        div.appendChild(title);
+        div.appendChild(price);
+        div.appendChild(controls);
+
+        productcontainer.appendChild(div);
+    });
 }
+
+fetchProducts();
